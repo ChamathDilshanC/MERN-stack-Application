@@ -1,3 +1,4 @@
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
@@ -19,6 +20,7 @@ const corsOptions = {
 // Apply CORS before other middleware
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(cookieParser()); // Parse cookies from request headers
 
 const PORT = process.env.PORT;
 

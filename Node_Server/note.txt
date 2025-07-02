@@ -1,0 +1,32 @@
+npm init -y
+npm i express
+npm i -D typescript ts-node @types/node @types/express
+npx tsc --init
+npm i -D nodemon
+
+#connect mongodb
+npm i mongoose
+
+#read .env fiels
+npm i dotenv
+
+IpK8dEDROwt4Aaar
+
+mongodb+srv://rashmika:IpK8dEDROwt4Aaar@mini-pos.zayc5ao.mongodb.net/
+
+npm i bcrypt
+npm i --save-dev @types/bcrypt
+
+// JWT
+
+
+npm install jsonwebtoken cookie-parser
+npm install --save-dev @types/jsonwebtoken @types/cookie-parser
+
+
+crypto  // by default coming on node (npm)
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+
+
+
+
