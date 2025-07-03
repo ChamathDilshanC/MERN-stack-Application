@@ -2,7 +2,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
-import { ConectToMongoDB } from "./db/mongo";
+import { ConnectToMongoDB } from "./db/mongo";
 import { errorHandler } from "./middlewares/errorHandler";
 import rootRouter from "./routes";
 
@@ -28,7 +28,7 @@ const PORT = process.env.PORT;
 app.use("/api", rootRouter);
 app.use(errorHandler);
 
-ConectToMongoDB()
+ConnectToMongoDB()
   .then(() => {
     app.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);
