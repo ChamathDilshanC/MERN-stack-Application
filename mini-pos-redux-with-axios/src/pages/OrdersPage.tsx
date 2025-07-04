@@ -15,12 +15,13 @@ import {
   updateOrder,
   deleteOrder,
 } from "../services/orderService";
+import { ScaleLoader } from "react-spinners";
 
 const OrdersPage: React.FC = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [items, setItems] = useState<Item[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [isOrdersLoading, setIsOrdersLoading] = useState(true);
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -31,7 +32,7 @@ const OrdersPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true);
+        setIsOrdersLoading(true);
         console.log("Fetching data...");
 
         const [customersData, itemsData, ordersData] = await Promise.all([
@@ -50,7 +51,7 @@ const OrdersPage: React.FC = () => {
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
-        setLoading(false);
+        setIsOrdersLoading(false);
       }
     };
 
@@ -177,20 +178,25 @@ const OrdersPage: React.FC = () => {
     }).format(price);
   };
 
-  if (loading) {
-    return (
-      <div className="p-6 bg-gray-100 min-h-screen">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex justify-center items-center h-64">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-              <p className="mt-4 text-gray-600">Loading...</p>
-            </div>
+  if (isOrdersLoading) {
+      return (
+        <div className="flex justify-center items-center min-h-screen bg-gray-100">
+          <div className="text-center">
+            <ScaleLoader
+              color="#4F46E5"
+              loading={isOrdersLoading}
+              height={35}
+              width={4}
+              radius={2}
+              margin={2}
+            />
+            <p className="mt-4 text-gray-600">Loading orders...</p>
           </div>
         </div>
-      </div>
-    );
+      );
   }
+
+
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">

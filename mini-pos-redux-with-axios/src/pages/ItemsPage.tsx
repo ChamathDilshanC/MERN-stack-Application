@@ -12,6 +12,7 @@ import {
   updateItem,
 } from "../services/itemService";
 import type { Item } from "../types/Item";
+import { ScaleLoader } from "react-spinners";
 
 const ItemsPage: React.FC = () => {
   const [items, setItems] = useState<Item[]>([]);
@@ -136,7 +137,21 @@ const ItemsPage: React.FC = () => {
   };
 
   if (isItemsLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <div className="text-center">
+          <ScaleLoader
+            color="#4F46E5"
+            loading={isItemsLoading}
+            height={35}
+            width={4}
+            radius={2}
+            margin={2}
+          />
+          <p className="mt-4 text-gray-600">Loading items...</p>
+        </div>
+      </div>
+    );
   }
 
   return (

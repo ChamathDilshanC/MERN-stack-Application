@@ -7,6 +7,7 @@ import CustomerForm from "../components/forms/CustomerForm"
 import axios from "axios"
 import toast from "react-hot-toast"
 import { addCustomer, deleteCustomer, getAllCustomers, updateCustomer } from "../services/customerService"
+import { ScaleLoader } from "react-spinners";
 
 const CustomersPage: React.FC = () => {
   const [customers, setCustomers] = useState<Customer[]>([])
@@ -115,14 +116,28 @@ const CustomersPage: React.FC = () => {
   }
 
   if (isCustomersLoading) {
-    return <div>Loading...</div>
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <div className="text-center">
+          <ScaleLoader
+            color="#4F46E5"
+            loading={isCustomersLoading}
+            height={35}
+            width={4}
+            radius={2}
+            margin={2}
+          />
+          <p className="mt-4 text-gray-600">Loading customers...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className='p-6 bg-gray-100 min-h-screen'>
-      <div className='max-w-7xl mx-auto'>
+    <div className="p-6 bg-gray-100 min-h-screen">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className='flex justify-between items-center mb-6'>
+        <div className="flex justify-between items-center mb-6">
           <h1 className='text-3xl font-bold text-gray-800'>Customers</h1>
           <button
             onClick={handleAddCustomer}
