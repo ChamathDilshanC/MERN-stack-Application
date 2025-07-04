@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../services/authService";
+import { useAuth } from "../context/useAuth";
+import toast from "react-hot-toast";
 
 interface FormData {
   email: string;
@@ -21,6 +23,7 @@ const Login = () => {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
+  const { login :unauthenticated } = useAuth();
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -58,6 +61,8 @@ const Login = () => {
 
       const user = await login(loginData);
       console.log("Login successful:", user);
+      toast.success(`Welcome, ${user.name}!`);
+      unauthenticated();
 
       navigate("/dashboard");
     } catch (error: any) {

@@ -1,17 +1,17 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { MdAdd } from "react-icons/md";
 import Dialog from "../components/Dialog";
-import type { Item } from "../types/Item";
-import ItemsTable from "../components/tables/ItemsTable";
 import ItemForm from "../components/forms/ItemForm";
-import axios from "axios";
-import toast from "react-hot-toast";
+import ItemsTable from "../components/tables/ItemsTable";
 import {
   addItem,
   deleteItem,
   getAllItems,
   updateItem,
 } from "../services/itemService";
+import type { Item } from "../types/Item";
 
 const ItemsPage: React.FC = () => {
   const [items, setItems] = useState<Item[]>([]);
@@ -41,8 +41,8 @@ const ItemsPage: React.FC = () => {
     fetchAllItems();
   }, []);
 
-  const removeItem = async (id: number) => {
-    await deleteItem(id);
+  const removeItem = async (_id: string) => {
+    await deleteItem(_id);
   };
 
   const handleAddItem = () => {
@@ -60,13 +60,16 @@ const ItemsPage: React.FC = () => {
     setIsDeleteDialogOpen(true);
   };
 
-  const handleFormSubmit = async (itemData: Omit<Item, "id">) => {
+  const handleFormSubmit = async (itemData: Omit<Item, "_id">) => {
+    // Fixed: use _id instead of id
     if (selectedItem) {
       // Update existing item
       try {
-        const updatedItem = await updateItem(selectedItem.id, itemData);
+        const updatedItem = await updateItem(selectedItem._id, itemData);
         setItems((prev) =>
-          prev.map((item) => (item.id === selectedItem.id ? updatedItem : item))
+          prev.map((item) =>
+            item._id === selectedItem._id ? updatedItem : item
+          )
         );
         setIsEditDialogOpen(false);
         toast.success("Item updated successfully");
@@ -98,7 +101,7 @@ const ItemsPage: React.FC = () => {
   const confirmDelete = async () => {
     if (selectedItem) {
       try {
-        await removeItem(selectedItem.id);
+        await removeItem(selectedItem._id);
         fetchAllItems(); // Refresh the list
         toast.success("Item deleted successfully");
       } catch (error) {

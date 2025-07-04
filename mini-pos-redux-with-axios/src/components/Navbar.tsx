@@ -1,22 +1,46 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { login, logout } from "../services/authService"; // Import your auth service
+import toast from "react-hot-toast";
+import {logout} from "../services/authService";
+import axios from "axios";
+import { useAuth } from "../context/useAuth";
+
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const {isLoggedIn, logout : unauthenticated}  = useAuth();
+
+
+
 
   const handleLogin = () => {
+    console.log("Login");
     navigate("/login");
   };
 
   const handleLogout = async () => {
+    setIsLoading(true);
     try {
       await logout();
-      navigate("/login");
+      toast.success("Logout successful!");
+      unauthenticated(); // <-- call the logout function from AuthContext
+      navigate("/login"); // <-- navigate to login on success
     } catch (error) {
-      console.error("Logout failed:", error);
+      if (axios.isAxiosError(error)) {
+        toast.error(error.message);
+      } else {
+        toast.error("Something went wrong");
+      }
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  const handleDashboard = () => {
+    console.log("Dashboard");
+    navigate("/dashboard");
   };
 
   const toggleMenu = () => {
@@ -38,18 +62,29 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-4">
-            <button
-              onClick={handleLogin}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Login
-            </button>
-            <button
-              onClick={handleLogout}
-              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-            >
-              Logout
-            </button>
+
+              {!isLoggedIn && (
+              <button
+                onClick={handleLogin}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                Login
+              </button>)}
+
+              {isLoggedIn && (
+              <button
+                onClick={handleLogout}
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+              >
+                Logout
+              </button>)}
+
+              {isLoggedIn &&(<button
+                onClick={handleDashboard}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+              >
+                Dashboard
+              </button>)}
           </div>
 
           {/* Mobile menu button */}
@@ -79,18 +114,35 @@ const Navbar = () => {
         {isMenuOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-200">
-              <button
-                onClick={handleLogin}
-                className="block w-full text-left bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-md text-base font-medium"
-              >
-                Login
-              </button>
-              <button
-                onClick={handleLogout}
-                className="block w-full text-left bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-md text-base font-medium"
-              >
-                Logout
-              </button>
+
+                {!isLoggedIn && (
+                  <button
+                    onClick={handleLogin}
+                    className="block w-full text-left bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-md text-base font-medium"
+                  >
+                    Login
+                  </button>
+                )}
+              )
+
+              {isLoggedIn && (
+                <button
+                  disabled={isLoading}
+                  onClick={handleLogout}
+                  className="block w-full text-left bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-md text-base font-medium"
+                >
+                  {isLoading ? "Logging out..." : "Logout"}
+                </button>
+              )}
+
+              {isLoggedIn && (
+                <button
+                  onClick={handleDashboard}
+                  className="block w-full text-left bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded-md text-base font-medium"
+                >
+                  Dashboard
+                </button>
+              )}
             </div>
           </div>
         )}

@@ -1,8 +1,9 @@
 import { Navigate, Outlet } from "react-router-dom"
 import Sidebar from "../components/Sidebar"
+import { useAuth } from "../context/useAuth"
 
 const AdminRoutes = () => {
-  const isLoggedIn = true
+  const { isLoggedIn } = useAuth()
 
   if (!isLoggedIn) return <Navigate to='/login' />
 

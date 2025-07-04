@@ -1,20 +1,22 @@
 import { Router } from "express";
 import {
-  addItem,
+  createItem,
   deleteItem,
-  getItemById,
   getItems,
+  getItemById,
   updateItem,
 } from "../controller/item.controller";
 import { authenticateToken } from "../middlewares/authenticateToken";
 
 const itemRouter = Router();
+
+// Apply authentication middleware if needed
 // itemRouter.use(authenticateToken);
 
-itemRouter.post("/", addItem);
+itemRouter.post("/", createItem);
 itemRouter.get("/", getItems);
-itemRouter.get("/:id", getItemById);
-itemRouter.put("/:id", updateItem);
-itemRouter.delete("/:id", deleteItem);
+itemRouter.get("/:_id", getItemById);
+itemRouter.put("/:_id", updateItem);
+itemRouter.delete("/:_id", deleteItem);
 
 export default itemRouter;
