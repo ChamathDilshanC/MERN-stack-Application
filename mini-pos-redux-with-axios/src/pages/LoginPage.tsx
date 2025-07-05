@@ -62,7 +62,7 @@ const Login = () => {
       const user = await login(loginData);
       console.log("Login successful:", user);
       toast.success(`Welcome, ${user.name}!`);
-      unauthenticated();
+      unauthenticated(user.accessToken);
 
       navigate("/dashboard");
     } catch (error: any) {

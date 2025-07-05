@@ -8,4 +8,12 @@ const apiClient = axios.create({
   withCredentials: true,
 });
 
+export const setHeader = (token: string | null) => {
+  if (token) {
+    apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`; // Set Authorization header if token exists
+  } else {
+    delete apiClient.defaults.headers.common["Authorization"]; // Remove Authorization header if no token
+  }
+};
+
 export default apiClient;
