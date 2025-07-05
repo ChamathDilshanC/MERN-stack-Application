@@ -8,7 +8,7 @@ const createAccessToken = (userId: string) => {
   return jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET!, {
     // ! ==> never null or undefined
 
-    expiresIn: "15m",
+    expiresIn: "10s",
   });
 };
 
@@ -86,11 +86,12 @@ export const login = async (
     const refreshToken = createRefreshToken(user._id.toString());
 
     const isProd = process.env.NODE_ENV === "production";
+    // In your login and logout functions, change:
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: isProd, // true in production
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      path: "api/auth/refresh-token",
+      secure: isProd,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: "/api/auth/refresh-token", // Add the leading slash
     });
 
     const userWithoutPassword = {
@@ -153,12 +154,12 @@ export const logout = async (
   res: Response,
   next: NextFunction
 ) => {
-  const prod = process.env.NODE_ENV === "production";
-  res.cookie("refreshToken", "", {
+  const isProd = process.env.NODE_ENV === "production";
+  res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
-    secure: prod,
-    expires: new Date(0),
-    path: "api/auth/refresh-token",
+    secure: isProd,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    path: "/api/auth/refresh-token",
   });
   res.status(200).json({ message: "Logged out successfully" });
 };
