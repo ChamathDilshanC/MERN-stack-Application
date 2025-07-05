@@ -1,9 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import jwt, {
-  JsonWebTokenError,
-  JwtPayload,
-  TokenExpiredError,
-} from "jsonwebtoken";
+import jwt, { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 import { ApiError } from "../errors/ApiError";
 
 // Middleware to authenticate JWT access token
@@ -17,7 +13,7 @@ export const authenticateToken = (
     const token = authHeader && authHeader.split(" ")[1]; // Expect "Bearer TOKEN"
 
     if (!token) {
-      return next(new ApiError(401, "Access token missing"));
+      return next(new ApiError(403, "Access token missing"));
     }
 
     jwt.verify(
@@ -26,16 +22,16 @@ export const authenticateToken = (
       (err, decoded) => {
         if (err) {
           if (err instanceof TokenExpiredError) {
-            return next(new ApiError(401, "Access token expired"));
+            return next(new ApiError(403, "Access token expired"));
           } else if (err instanceof JsonWebTokenError) {
-            return next(new ApiError(401, "Invalid access token"));
+            return next(new ApiError(403, "Invalid access token"));
           } else {
-            return next(new ApiError(401, "Could not authenticate token"));
+            return next(new ApiError(403, "Could not authenticate token"));
           }
         }
 
         if (!decoded || typeof decoded === "string") {
-          throw new ApiError(401, "Invalid token payload");
+          throw new ApiError(403, "Invalid token payload");
         }
 
         // Attach user info (e.g. userId) to request object for downstream handlers
