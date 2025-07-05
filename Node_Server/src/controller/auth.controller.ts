@@ -8,7 +8,7 @@ const createAccessToken = (userId: string) => {
   return jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET!, {
     // ! ==> never null or undefined
 
-    expiresIn: "10s",
+    expiresIn: "15m",
   });
 };
 
